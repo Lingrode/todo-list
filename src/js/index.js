@@ -14,7 +14,48 @@ const resolvedTasksList = document.querySelector(".resolved__tasks-list");
 let tasks = [];
 let doneTasks = [];
 
-createTaskBtn.addEventListener("click", () => {
+createTaskBtn.addEventListener("click", createTask);
+
+function doneTask(target) {
+  const task = target.closest(".main__list-item");
+  task.remove();
+
+  const doneTaskHTML = `
+  <div class="main__list-item">
+    <p>Виконана задача</p>
+    <div class="important">
+      <svg
+        class="cross-err-btn"
+        width="800px"
+        height="800px"
+        viewBox="0 0 24 24"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <path
+           d="M6.99486 7.00636C6.60433 7.39689 6.60433 8.03005 6.99486 8.42058L10.58 12.0057L6.99486 15.5909C6.60433 15.9814 6.60433 16.6146 6.99486 17.0051C7.38538 17.3956 8.01855 17.3956 8.40907 17.0051L11.9942 13.4199L15.5794 17.0051C15.9699 17.3956 16.6031 17.3956 16.9936 17.0051C17.3841 16.6146 17.3841 15.9814 16.9936 15.5909L13.4084 12.0057L16.9936 8.42059C17.3841 8.03007 17.3841 7.3969 16.9936 7.00638C16.603 6.61585 15.9699 6.61585 15.5794 7.00638L11.9942 10.5915L8.40907 7.00636C8.01855 6.61584 7.38538 6.61584 6.99486 7.00636Z"
+        />
+      </svg>
+    </div>
+  </div>
+  `;
+
+  resolvedTasksList.insertAdjacentHTML("beforeend", doneTaskHTML);
+}
+
+function deleteTask(target) {
+  const taskToDelete = target.closest(".main__list-item");
+  taskToDelete.remove();
+}
+
+function makeImportantTask(target) {
+  const taskToImportant = target.closest(".main__list-item");
+  const star = taskToImportant.querySelector(".star-important");
+
+  star.classList.toggle("star-important-checked");
+}
+
+function createTask() {
   const taskText = createTaskInput.value;
 
   if (!taskText) {
@@ -59,23 +100,6 @@ createTaskBtn.addEventListener("click", () => {
 
   createTaskInput.value = "";
   createTaskInput.focus();
-});
-
-function doneTask(target) {
-  const task = target.closest(".main__list-item");
-  task.querySelector(".task-name").classList.toggle("done-task");
-}
-
-function deleteTask(target) {
-  const taskToDelete = target.closest(".main__list-item");
-  taskToDelete.remove();
-}
-
-function makeImportantTask(target) {
-  const taskToImportant = target.closest(".main__list-item");
-  const star = taskToImportant.querySelector(".star-important");
-
-  star.classList.toggle("star-important-checked");
 }
 
 doneBtn.forEach((el) => {
@@ -88,4 +112,17 @@ deleteBtn.forEach((el) => {
 
 importantBtn.forEach((el) => {
   el.addEventListener("click", makeImportantTask);
+});
+
+clearListBtn.addEventListener("click", () => {
+  const allTasks = document.querySelectorAll(".main__list-item");
+  allTasks.forEach((el) => {
+    el.remove();
+  });
+});
+
+createTaskInput.addEventListener("keydown", (e) => {
+  if (e.key === "Enter") {
+    createTask();
+  }
 });
