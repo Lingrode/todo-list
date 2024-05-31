@@ -4,6 +4,10 @@
 @import "./base/base";
 @import "./base/utils";
 
+.done-task {
+  text-decoration: line-through;
+}
+
 .common-btn {
   border-radius: 50%;
   display: inline-flex;
