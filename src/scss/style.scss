@@ -268,7 +268,7 @@
     }
 
     .footer {
-      margin-left: 53px;
+      margin-left: 33px;
 
       &__resolved-tasks {
         display: flex;
@@ -282,6 +282,7 @@
 
       &__title {
         margin-right: 20px;
+        padding-left: 20px;
         position: relative;
         font-weight: 700;
         color: var(--text-color);
@@ -292,7 +293,7 @@
           background: url("../img/accordeon.svg") no-repeat center;
           display: block;
           top: -2px;
-          left: -37px;
+          left: -17px;
           width: 25px;
           height: 25px;
           transition: all 0.2s ease-out;

@@ -20,9 +20,22 @@ function doneTask(target) {
   const task = target.closest(".main__list-item");
   task.remove();
 
+  let indexTaskToDone = null;
+
+  tasks = tasks.map((el, index) => {
+    if (el.id === task.dataset.id) {
+      indexTaskToDone = index;
+    }
+
+    return el;
+  });
+
+  const doneTask = tasks[indexTaskToDone];
+  doneTasks.push(doneTask);
+
   const doneTaskHTML = `
-  <div class="main__list-item">
-    <p>${ta}</p>
+  <div class="main__list-item" data-id="${doneTask.id}">
+    <p>${doneTask.text}</p>
     <div class="important">
       <svg
         class="cross-err-btn"
@@ -41,12 +54,21 @@ function doneTask(target) {
   </div>
   `;
 
+  tasks = tasks.filter((el) => el.id !== doneTask.id);
+  task.remove();
+
   resolvedTasksList.insertAdjacentHTML("beforeend", doneTaskHTML);
 }
 
-function deleteTask(target) {
+function deleteTask(target, taskType) {
   const taskToDelete = target.closest(".main__list-item");
   taskToDelete.remove();
+
+  if (taskType === "doneTasks") {
+    doneTasks = doneTasks.filter((el) => el.id !== taskToDelete.dataset.id);
+  } else {
+    tasks = tasks.filter((el) => el.id !== taskToDelete.dataset.id);
+  }
 }
 
 function makeImportantTask(target) {
@@ -54,6 +76,14 @@ function makeImportantTask(target) {
   const star = taskToImportant.querySelector(".star-important");
 
   star.classList.toggle("star-important-checked");
+
+  tasks = tasks.map((el) => {
+    if (el.id === taskToImportant.dataset.id) {
+      el.isImportant = !el.isImportant;
+    }
+
+    return el;
+  });
 }
 
 function createTask() {
@@ -63,7 +93,9 @@ function createTask() {
     return alert("Ви не ввели назву задачі!");
   }
 
-  const taskItem = `<div class="main__list-item">
+  const id = Math.random().toString();
+
+  const taskItem = `<div class="main__list-item" data-id="${id}">
   <input class="done-btn" type="checkbox" onclick="doneTask(this)" />
   <p class="task-name">${taskText}</p>
   <span class="date-info">28.05.2024</span>
@@ -101,6 +133,16 @@ function createTask() {
 
   createTaskInput.value = "";
   createTaskInput.focus();
+
+  tasks.push({
+    id,
+    text: taskText,
+    date: moment().format("DD.MM.YYYY"),
+    isImportant: false,
+    isChecked: false,
+  });
+
+  console.log(tasks);
 }
 
 doneBtn.forEach((el) => {
@@ -120,6 +162,9 @@ clearListBtn.addEventListener("click", () => {
   allTasks.forEach((el) => {
     el.remove();
   });
+
+  tasks = [];
+  doneTasks = [];
 });
 
 createTaskInput.addEventListener("keydown", (e) => {
