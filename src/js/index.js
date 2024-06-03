@@ -11,14 +11,29 @@ const sortBtn = document.querySelector(".header__sort-btn");
 const taskList = document.querySelector(".task-list");
 const resolvedTasksList = document.querySelector(".resolved__tasks-list");
 
+let currentTab = "freeTime";
+
 let tasks = [];
 let doneTasks = [];
 
-document.addEventListener("DOMContentLoaded", () => {
-  const savedTasks = parseDataFromLocalStorage("tasks") ?? [];
-  const savedDoneTasks = parseDataFromLocalStorage("doneTasks") ?? [];
+const data = {
+  freeTime: {
+    tasks: [],
+    doneTasks: [],
+  },
+  workTime: {
+    tasks: [],
+    doneTasks: [],
+  },
+};
 
-  [tasks, doneTasks] = [savedTasks, savedDoneTasks];
+let currentTabData = data[currentTab];
+
+document.addEventListener("DOMContentLoaded", () => {
+  const tasksFromLS = parseDataFromLocalStorage() ?? data;
+  const { tasks, doneTasks } = tasksFromLS[currentTab];
+
+  [currentTabData.tasks, currentTabData.doneTasks] = [tasks, doneTasks];
 
   tasks.forEach((el) => {
     renderSimpleTask(el);
@@ -29,12 +44,12 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 });
 
-function setDataToLocalStorage(type, arr) {
-  localStorage.setItem(`${type}`, JSON.stringify(arr));
+function setDataToLocalStorage() {
+  localStorage.setItem("data", JSON.stringify(data));
 }
 
-function parseDataFromLocalStorage(type) {
-  return JSON.parse(localStorage.getItem(type));
+function parseDataFromLocalStorage() {
+  return JSON.parse(localStorage.getItem("data"));
 }
 
 createTaskBtn.addEventListener("click", createTask);
@@ -61,8 +76,8 @@ function doneTask(target) {
   tasks = tasks.filter((el) => el.id !== doneTask.id);
   task.remove();
 
-  setDataToLocalStorage("tasks", tasks);
-  setDataToLocalStorage("doneTasks", doneTasks);
+  setDataToLocalStorage();
+  setDataToLocalStorage();
 }
 
 function deleteTask(target, taskType) {
@@ -71,10 +86,10 @@ function deleteTask(target, taskType) {
 
   if (taskType === "doneTasks") {
     doneTasks = doneTasks.filter((el) => el.id !== taskToDelete.dataset.id);
-    setDataToLocalStorage("doneTasks", doneTasks);
+    setDataToLocalStorage();
   } else {
     tasks = tasks.filter((el) => el.id !== taskToDelete.dataset.id);
-    setDataToLocalStorage("tasks", tasks);
+    setDataToLocalStorage();
   }
 }
 
@@ -92,7 +107,7 @@ function makeImportantTask(target) {
     return el;
   });
 
-  setDataToLocalStorage("tasks", tasks);
+  setDataToLocalStorage();
 }
 
 function createTask() {
@@ -120,7 +135,7 @@ function createTask() {
 
   tasks.push(task);
 
-  setDataToLocalStorage("tasks", tasks);
+  setDataToLocalStorage();
 }
 
 doneBtn.forEach((el) => {
@@ -144,8 +159,8 @@ clearListBtn.addEventListener("click", () => {
   tasks = [];
   doneTasks = [];
 
-  setDataToLocalStorage("tasks", []);
-  setDataToLocalStorage("doneTasks", []);
+  setDataToLocalStorage();
+  setDataToLocalStorage();
 });
 
 sortBtn.addEventListener("click", () => {
@@ -160,7 +175,7 @@ sortBtn.addEventListener("click", () => {
     renderSimpleTask(el);
   });
 
-  setDataToLocalStorage("tasks", tasks);
+  setDataToLocalStorage();
 });
 
 function renderSimpleTask(el) {
