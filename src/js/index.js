@@ -10,6 +10,7 @@ const sortBtn = document.querySelector(".header__sort-btn");
 
 const taskList = document.querySelector(".task-list");
 const resolvedTasksList = document.querySelector(".resolved__tasks-list");
+const drawerItems = document.querySelectorAll(".todo__drawer-item");
 
 let currentTab = "freeTime";
 
@@ -29,7 +30,14 @@ const data = {
 
 let currentTabData = data[currentTab];
 
-document.addEventListener("DOMContentLoaded", () => {
+document.addEventListener("DOMContentLoaded", renderTaskList);
+
+function renderTaskList() {
+  const allTasks = document.querySelectorAll(".main__list-item");
+  allTasks.forEach((el) => {
+    el.remove();
+  });
+
   const tasksFromLS = parseDataFromLocalStorage() ?? data;
   const { tasks, doneTasks } = tasksFromLS[currentTab];
 
@@ -42,7 +50,7 @@ document.addEventListener("DOMContentLoaded", () => {
   doneTasks.forEach((el) => {
     renderReadyTask(el);
   });
-});
+}
 
 function setDataToLocalStorage() {
   localStorage.setItem("data", JSON.stringify(data));
@@ -133,7 +141,7 @@ function createTask() {
   createTaskInput.value = "";
   createTaskInput.focus();
 
-  tasks.push(task);
+  currentTabData.tasks.push(task);
 
   setDataToLocalStorage();
 }
@@ -156,8 +164,8 @@ clearListBtn.addEventListener("click", () => {
     el.remove();
   });
 
-  tasks = [];
-  doneTasks = [];
+  currentTabData.tasks = [];
+  currentTabData.doneTasks = [];
 
   setDataToLocalStorage();
   setDataToLocalStorage();
@@ -242,6 +250,14 @@ function renderReadyTask(el) {
 
   resolvedTasksList.insertAdjacentHTML("beforeend", doneTaskHTML);
 }
+
+drawerItems.forEach((item) => {
+  item.addEventListener("click", () => {
+    currentTab = item.dataset.type;
+    currentTabData = data[currentTab];
+    renderTaskList();
+  });
+});
 
 createTaskInput.addEventListener("keydown", (e) => {
   if (e.key === "Enter") {
