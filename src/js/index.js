@@ -176,9 +176,9 @@ sortBtn.addEventListener("click", () => {
     el.remove();
   });
 
-  tasks.reverse();
+  currentTabData.tasks.reverse();
 
-  tasks.forEach((el) => {
+  currentTabData.tasks.forEach((el) => {
     renderSimpleTask(el);
   });
 
