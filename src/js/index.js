@@ -67,6 +67,7 @@ function doneTask(target) {
   task.remove();
 
   let indexTaskToDone = null;
+  let tasks = currentTabData["tasks"];
 
   tasks = tasks.map((el, index) => {
     if (el.id === task.dataset.id) {
@@ -77,12 +78,12 @@ function doneTask(target) {
   });
 
   const doneTask = tasks[indexTaskToDone];
-  doneTasks.push(doneTask);
+  currentTabData["doneTasks"].push(doneTask);
+
+  currentTabData["tasks"] = tasks.filter((el) => el.id !== doneTask.id);
+  task.remove();
 
   renderReadyTask(doneTask);
-
-  tasks = tasks.filter((el) => el.id !== doneTask.id);
-  task.remove();
 
   setDataToLocalStorage();
   setDataToLocalStorage();
@@ -105,7 +106,7 @@ function makeImportantTask(target) {
 
   star.classList.toggle("star-important-checked");
 
-  tasks = tasks.map((el) => {
+  currentTabData["tasks"] = currentTabData["tasks"].map((el) => {
     if (el.id === taskToImportant.dataset.id) {
       el.isImportant = !el.isImportant;
     }
