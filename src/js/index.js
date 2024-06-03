@@ -92,13 +92,11 @@ function deleteTask(target, taskType) {
   const taskToDelete = target.closest(".main__list-item");
   taskToDelete.remove();
 
-  if (taskType === "doneTasks") {
-    doneTasks = doneTasks.filter((el) => el.id !== taskToDelete.dataset.id);
-    setDataToLocalStorage();
-  } else {
-    tasks = tasks.filter((el) => el.id !== taskToDelete.dataset.id);
-    setDataToLocalStorage();
-  }
+  currentTabData[taskType] = currentTabData[taskType].filter(
+    (el) => el.id !== taskToDelete.dataset.id
+  );
+
+  setDataToLocalStorage();
 }
 
 function makeImportantTask(target) {
@@ -209,7 +207,7 @@ function renderSimpleTask(el) {
     </svg>
     <svg
       class="cross-err-btn"
-      onclick="deleteTask(this)"
+      onclick="deleteTask(this, 'tasks')"
       width="800px"
       height="800px"
       viewBox="0 0 24 24"
